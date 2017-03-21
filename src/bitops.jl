@@ -1,3 +1,5 @@
+# This file is a part of BitManip.jl, licensed under the MIT License (MIT).
+
 function bsizeof end
 export bsizeof
 

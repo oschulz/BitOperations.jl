@@ -1,4 +1,8 @@
-# This file is a part of BitManip, licensed under the MIT License (MIT).
+# This file is a part of BitManip.jl, licensed under the MIT License (MIT).
 
-import EasyPkg
-EasyPkg.run_all_tests()
+@Base.Test.testset "Package BitManip" begin
+    include.([
+        "test_bitops.jl",
+        "test_zigzagenc.jl",
+    ])
+end

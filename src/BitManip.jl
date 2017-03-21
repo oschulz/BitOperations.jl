@@ -1,13 +1,13 @@
-# This file is a part of BitManip, licensed under the MIT License (MIT).
+# This file is a part of BitManip.jl, licensed under the MIT License (MIT).
 
-__precompile__()
+__precompile__(true)
 
 module BitManip
 
-import EasyPkg
-EasyPkg.include_all_sources()
-
-function __init__()
-end
+include.([
+    "bitops.jl",
+    "endianess.jl",
+    "zigzagzenc.jl",
+])
 
 end # module
