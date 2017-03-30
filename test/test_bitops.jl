@@ -57,6 +57,17 @@ using Base.Test
     end
 
 
+    @testset "single-bit bflip" begin
+        @test bflip(0b1001000110100, 5) == 0b1001000010100
+        @test bflip(0b1001000110100, 9) == 0b1000000110100
+    end
+
+
+    @testset "multi-bit bflip" begin
+        @test bflip(0xa5a5, 4:11) == 0xaa55
+    end
+
+
     @testset "single-bit lsbget and msbget" begin
         @test lsbget(0) == false
         @test lsbget(1) == true

@@ -1,5 +1,8 @@
 # This file is a part of BitManip.jl, licensed under the MIT License (MIT).
 
+using Compat
+
+
 export BitCount
 const BitCount = Union{Signed, Unsigned}
 
@@ -23,6 +26,9 @@ export bset
 
 function bclear end
 export bclear
+
+function bflip end
+export bflip
 
 function lsbget end
 export lsbget
@@ -67,6 +73,11 @@ end
     local bm = bmask(typeof(x), bits)
     (x & ~bm) | ((convert(typeof(x), y) << bits.start) & bm)
 end
+
+
+@inline bflip(x::Integer, bit::BitCount) = xor(x, bmask(typeof(x), bit))
+
+@inline bflip{U <: BitCount}(x::Integer, bits::UnitRange{U}) = xor(x, bmask(typeof(x), bits))
 
 
 @inline lsbget(x::Integer) =
