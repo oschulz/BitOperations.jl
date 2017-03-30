@@ -17,16 +17,16 @@ export htol!
 
 
 bswap!(x::AbstractArray) = begin
-    for i in eachindex(x)
-        x[i] = bswap(x[i])
+    @inbounds for i in eachindex(x)
+        x[i] = Base.bswap(x[i])
     end
     x
 end
 
 
 bswap!(dest::AbstractArray, src) = begin
-    for i in eachindex(dest, src)
-        dest[i] = bswap(src[i])
+    @inbounds for i in eachindex(dest, src)
+        dest[i] = Base.bswap(src[i])
     end
     dest
 end
