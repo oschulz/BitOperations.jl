@@ -1,18 +1,18 @@
 # This file is a part of BitManip.jl, licensed under the MIT License (MIT).
 
-function bswap end
+function bswap! end
 export bswap!
 
-function bget end
+function ntoh! end
 export ntoh!
 
-function bget end
+function hton! end
 export hton!
 
-function bget end
+function ltoh! end
 export ltoh!
 
-function bget end
+function htol! end
 export htol!
 
 
