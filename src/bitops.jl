@@ -2,40 +2,9 @@
 
 using Compat
 
+export BitCount, bsizeof, bmask, lsbmask, msbmask, bget, bset, bclear, bflip, lsbget, msbset
 
-export BitCount
 const BitCount = Union{Signed, Unsigned}
-
-function bsizeof end
-export bsizeof
-
-function bmask end
-export bmask
-
-function lsbmask end
-export lsbmask
-
-function msbmask end
-export msbmask
-
-function bget end
-export bget
-
-function bset end
-export bset
-
-function bclear end
-export bclear
-
-function bflip end
-export bflip
-
-function lsbget end
-export lsbget
-
-function msbget end
-export msbget
-
 
 @inline fbc{T}(::Type{T}, x) = x%unsigned(T)
 @inline fbc{T,U}(::Type{T}, bits::UnitRange{U}) = fbc(T, bits.start):fbc(T, bits.stop)
