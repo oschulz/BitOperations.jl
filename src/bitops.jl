@@ -1,7 +1,5 @@
 # This file is a part of BitManip.jl, licensed under the MIT License (MIT).
 
-using Compat
-
 
 export BitCount
 const BitCount = Union{Signed, Unsigned}
