@@ -2,8 +2,6 @@
 
 import Compat.Test
 Test.@testset "Package BitManip" begin
-    include.([
-        "test_bitops.jl",
-        "test_zigzagenc.jl",
-    ])
+    include("test_bitops.jl")
+    include("test_zigzagenc.jl")
 end

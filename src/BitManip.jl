@@ -4,10 +4,8 @@ __precompile__(true)
 
 module BitManip
 
-include.([
-    "bitops.jl",
-    "endianess.jl",
-    "zigzagzenc.jl",
-])
+include("bitops.jl")
+include("endianess.jl")
+include("zigzagzenc.jl")
 
 end # module
