@@ -1,7 +1,7 @@
 # This file is a part of BitManip.jl, licensed under the MIT License (MIT).
 
 using BitManip
-using Base.Test
+using Compat.Test
 
 @testset "bit operations" begin
     @testset "bsizeof" begin
