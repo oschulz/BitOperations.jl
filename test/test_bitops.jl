@@ -78,7 +78,7 @@ using Compat.Test
 
 
     @testset "multi-bit lsbget and msbget" begin
-        const x = 0xabffffffffffffd5
+        x = 0xabffffffffffffd5
 
         @test lsbget(x, 0) == 0
         @test lsbget(x, 6) == 0x15

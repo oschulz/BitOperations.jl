@@ -32,26 +32,24 @@ bswap!(dest::AbstractArray, src) = begin
 end
 
 
-if ENDIAN_BOM == 0x01020304
-    ntoh!(x) = x
-    hton!(x) = x
-    ltoh!(x) = bswap!(x)
-    htol!(x) = bswap!(x)
+function _copyto_if_not_same!(dest::AbstractArray, src::AbstractArray)
+    if dest !== src
+        copyto!(dest, src)
+    end
+    dest
+end
 
-    ntoh!(dest::AbstractArray, src) = copy!(dest, src)
-    hton!(dest::AbstractArray, src) = copy!(dest, src)
+
+if ENDIAN_BOM == 0x01020304
+    ntoh!(dest::AbstractArray, src) = _copyto_if_not_same!(dest, src)
+    hton!(dest::AbstractArray, src) = _copyto_if_not_same!(dest, src)
     ltoh!(dest::AbstractArray, src) = bswap!(dest, src)
     htol!(dest::AbstractArray, src) = bswap!(dest, src)
 elseif ENDIAN_BOM == 0x04030201
-    ntoh!(x) = bswap!(x)
-    hton!(x) = bswap!(x)
-    ltoh!(x) = x
-    htol!(x) = x
-
     ntoh!(dest::AbstractArray, src) = bswap!(dest, src)
     hton!(dest::AbstractArray, src) = bswap!(dest, src)
-    ltoh!(dest::AbstractArray, src) = copy!(dest, src)
-    htol!(dest::AbstractArray, src) = copy!(dest, src)
+    ltoh!(dest::AbstractArray, src) = _copyto_if_not_same!(dest, src)
+    htol!(dest::AbstractArray, src) = _copyto_if_not_same!(dest, src)
 else
     error("Unknown machine endianess")
 end

@@ -35,66 +35,66 @@ function msbget end
 export msbget
 
 
-@inline fbc{T}(::Type{T}, x) = x%unsigned(T)
-@inline fbc{T,U}(::Type{T}, bits::UnitRange{U}) = fbc(T, bits.start):fbc(T, bits.stop)
+@inline fbc(::Type{T}, x) where {T} = x%unsigned(T)
+@inline fbc(::Type{T}, bits::UnitRange{U}) where {T,U} = fbc(T, bits.start):fbc(T, bits.stop)
 
 
 @inline bsizeof(x) = sizeof(x) << 3
 
 
-@inline bmask{T <: Integer}(::Type{T}, bit::BitCount) = one(T) << fbc(T, bit)
+@inline bmask(::Type{T}, bit::BitCount) where {T<:Integer} = one(T) << fbc(T, bit)
 
-@inline bmask{T <: Integer, U <: BitCount}(::Type{T}, bits::UnitRange{U}) = begin
+@inline bmask(::Type{T}, bits::UnitRange{U}) where {T<:Integer,U<:BitCount} = begin
     fbits = fbc(T, bits)
     #@assert fbits.stop >= fbits.start "Bitmask range of fbits can't be reverse"
     ((one(T) << (fbits.stop - fbits.start + 1)) - one(T)) << fbits.start
 end
 
 
-@inline lsbmask{T <: Integer}(::Type{T}) = one(T)
+@inline lsbmask(::Type{T}) where {T<:Integer} = one(T)
 
-@inline msbmask{T <: Integer}(::Type{T}) = one(T) << fbc(T, bsizeof(T) - 1)
-
-
-@inline lsbmask{T <: Integer}(::Type{T}, nbits::BitCount) = ~(~zero(T) << fbc(T, nbits))
-
-@inline msbmask{T <: Integer}(::Type{T}, nbits::BitCount) = ~(~zero(T) >>> fbc(T, nbits))
+@inline msbmask(::Type{T}) where {T<:Integer} = one(T) << fbc(T, bsizeof(T) - 1)
 
 
-@inline bget{T <: Integer}(x::T, bit::BitCount) = x & bmask(typeof(x), fbc(T, bit)) != zero(typeof(x))
+@inline lsbmask(::Type{T}, nbits::BitCount) where {T<:Integer} = ~(~zero(T) << fbc(T, nbits))
 
-@inline bset{T <: Integer}(x::T, bit::BitCount, y::Bool) = y ? bset(x, fbc(T, bit)) : bclear(x, fbc(T, bit))
-@inline bset{T <: Integer}(x::T, bit::BitCount) = x | bmask(typeof(x), fbc(T, bit))
-
-@inline bclear{T <: Integer}(x::T, bit::BitCount) = x & ~bmask(typeof(x), fbc(T, bit))
+@inline msbmask(::Type{T}, nbits::BitCount) where {T<:Integer} = ~(~zero(T) >>> fbc(T, nbits))
 
 
-@inline bget{T <: Integer, U <: BitCount}(x::T, bits::UnitRange{U}) = begin
+@inline bget(x::T, bit::BitCount) where {T<:Integer} = x & bmask(typeof(x), fbc(T, bit)) != zero(typeof(x))
+
+@inline bset(x::T, bit::BitCount, y::Bool) where {T<:Integer} = y ? bset(x, fbc(T, bit)) : bclear(x, fbc(T, bit))
+@inline bset(x::T, bit::BitCount) where {T<:Integer} = x | bmask(typeof(x), fbc(T, bit))
+
+@inline bclear(x::T, bit::BitCount) where {T<:Integer} = x & ~bmask(typeof(x), fbc(T, bit))
+
+
+@inline bget(x::T, bits::UnitRange{U}) where {T<:Integer,U<:BitCount} = begin
     fbits = fbc(T, bits)
     (x & bmask(typeof(x), fbits)) >>> fbits.start
 end
 
-@inline bset{T <: Integer, U <: BitCount}(x::T, bits::UnitRange{U}, y::Integer) = begin
+@inline bset(x::T, bits::UnitRange{U}, y::Integer) where {T<:Integer,U<:BitCount} = begin
     fbits = fbc(T, bits)
     local bm = bmask(typeof(x), fbits)
     (x & ~bm) | ((convert(typeof(x), y) << fbits.start) & bm)
 end
 
 
-@inline bflip{T <: Integer}(x::T, bit::BitCount) = xor(x, bmask(typeof(x), fbc(T, bit)))
+@inline bflip(x::T, bit::BitCount) where {T<:Integer} = xor(x, bmask(typeof(x), fbc(T, bit)))
 
-@inline bflip{T <: Integer, U <: BitCount}(x::T, bits::UnitRange{U}) = xor(x, bmask(typeof(x), fbc(T, bits)))
+@inline bflip(x::T, bits::UnitRange{U}) where {T<:Integer,U<:BitCount} = xor(x, bmask(typeof(x), fbc(T, bits)))
 
 
-@inline lsbget{T <: Integer}(x::T) =
+@inline lsbget(x::T) where {T<:Integer} =
     x & lsbmask(typeof(x)) != zero(typeof(x))
 
-@inline msbget{T <: Integer}(x::T) =
+@inline msbget(x::T) where {T<:Integer} =
     x & msbmask(typeof(x)) != zero(typeof(x))
 
 
-@inline lsbget{T <: Integer}(x::T, nbits::BitCount) =
+@inline lsbget(x::T, nbits::BitCount) where {T<:Integer} =
     x & lsbmask(typeof(x), fbc(T, nbits))
 
-@inline msbget{T <: Integer}(x::T, nbits::BitCount) =
+@inline msbget(x::T, nbits::BitCount) where {T<:Integer} =
     x >>> (bsizeof(x) - fbc(T, nbits))

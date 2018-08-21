@@ -4,6 +4,6 @@ export zigzagenc
 export zigzagdec
 
 
-@inline zigzagenc(x::Signed) = unsigned((x << 1) $ (x >> (8 * sizeof(x) - 1)))
+@inline zigzagenc(x::Signed) = unsigned(xor((x << 1), (x >> (8 * sizeof(x) - 1))))
 
-@inline zigzagdec(x::Unsigned) = signed((x >>> 1) $ (-(x & 1)))
+@inline zigzagdec(x::Unsigned) = signed(xor((x >>> 1), (-(x & 1))))
