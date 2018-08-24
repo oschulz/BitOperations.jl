@@ -1,8 +1,8 @@
-# This file is a part of BitManip.jl, licensed under the MIT License (MIT).
+# This file is a part of BitOperations.jl, licensed under the MIT License (MIT).
 
 __precompile__(true)
 
-module BitManip
+module BitOperations
 
 include("bitops.jl")
 include("endianess.jl")

@@ -1,6 +1,6 @@
-# This file is a part of BitManip.jl, licensed under the MIT License (MIT).
+# This file is a part of BitOperations.jl, licensed under the MIT License (MIT).
 
-using BitManip
+using BitOperations
 using Compat.Test
 
 @testset "bit operations" begin
