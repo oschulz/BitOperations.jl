@@ -10,9 +10,9 @@
 
 ## Documentation
 
-A Julia package for bit and register operations. This is mainly intended
-for Julia code that needs to talk to hardware (with a register-based
-memory model) or work with intricate binary data formats.
+BitOperations is a Julia package for bit and register operations. It is mainly
+intended for Julia code that needs to communicate with hardware (e.g. with a
+register-based memory model) or work with intricate binary data formats.
 
 * [Documentation for stable version](https://oschulz.github.io/BitOperations.jl/stable)
 * [Documentation for development version](https://oschulz.github.io/BitOperations.jl/dev)

@@ -1,100 +1,203 @@
 # This file is a part of BitOperations.jl, licensed under the MIT License (MIT).
 
 
-export BitCount
+"""
+    BitOperations.BitCount = Union{Signed, Unsigned}
+
+A number of bits or the index of a bit.
+"""
 const BitCount = Union{Signed, Unsigned}
 
-function bsizeof end
-export bsizeof
-
-function bmask end
-export bmask
-
-function lsbmask end
-export lsbmask
-
-function msbmask end
-export msbmask
-
-function bget end
-export bget
-
-function bset end
-export bset
-
-function bclear end
-export bclear
-
-function bflip end
-export bflip
-
-function lsbget end
-export lsbget
-
-function msbget end
-export msbget
 
 
 @inline fbc(::Type{T}, x) where {T} = x%unsigned(T)
 @inline fbc(::Type{T}, bits::UnitRange{U}) where {T,U} = fbc(T, bits.start):fbc(T, bits.stop)
 
 
+function bsizeof end
+export bsizeof
+
+"""
+    bsizeof(x)
+
+Returns the data size of x in bits.
+"""
 @inline bsizeof(x) = sizeof(x) << 3
 
 
+function bmask end
+export bmask
+
+"""
+    bmask(::Type{T}, bit::Integer)::T where {T<:Integer}
+
+Generates a bit mask of type `T` with bit `bit` set to one.
+"""
 @inline bmask(::Type{T}, bit::BitCount) where {T<:Integer} = one(T) << fbc(T, bit)
 
-@inline bmask(::Type{T}, bits::UnitRange{U}) where {T<:Integer,U<:BitCount} = begin
+"""
+    bmask(::Type{T}, bits::UnitRange{<:Integer})::T where {T<:Integer}
+
+Generates a bit mask of type `T` with bit-range `bits` set to one.
+"""
+@inline bmask(::Type{T}, bits::UnitRange{<:BitCount}) where {T<:Integer} = begin
     fbits = fbc(T, bits)
     #@assert fbits.stop >= fbits.start "Bitmask range of fbits can't be reverse"
     ((one(T) << (fbits.stop - fbits.start + 1)) - one(T)) << fbits.start
 end
 
 
+function lsbmask end
+export lsbmask
+
+"""
+    lsbmask(::Type{T})::T where {T<:Integer}
+
+Generates a bit mask with only the least significant bit set.
+"""
 @inline lsbmask(::Type{T}) where {T<:Integer} = one(T)
 
-@inline msbmask(::Type{T}) where {T<:Integer} = one(T) << fbc(T, bsizeof(T) - 1)
+"""
+    lsbmask(::Type{T}, nbits::Integer)::T where {T<:Integer}
 
-
+Generates a bit mask with only the `nbits` least significant bits set.
+"""
 @inline lsbmask(::Type{T}, nbits::BitCount) where {T<:Integer} = ~(~zero(T) << fbc(T, nbits))
 
+
+function msbmask end
+export msbmask
+
+"""
+    msbmask(::Type{T})::T where {T<:Integer}
+
+Generates a bit mask with only the most significant bit set.
+"""
+@inline msbmask(::Type{T}) where {T<:Integer} = one(T) << fbc(T, bsizeof(T) - 1)
+
+"""
+    msbmask(::Type{T}, nbits::Integer)::T where {T<:Integer}
+
+Generates a bit mask with only the `nbits` most significant bits set.
+"""
 @inline msbmask(::Type{T}, nbits::BitCount) where {T<:Integer} = ~(~zero(T) >>> fbc(T, nbits))
 
 
+function bget end
+export bget
+
+"""
+    bget(x::T, bit::Integer)::Bool where {T<:Integer}
+
+Get the value of bit `bit` of x.
+"""
 @inline bget(x::T, bit::BitCount) where {T<:Integer} = x & bmask(typeof(x), fbc(T, bit)) != zero(typeof(x))
 
-@inline bset(x::T, bit::BitCount, y::Bool) where {T<:Integer} = y ? bset(x, fbc(T, bit)) : bclear(x, fbc(T, bit))
-@inline bset(x::T, bit::BitCount) where {T<:Integer} = x | bmask(typeof(x), fbc(T, bit))
+"""
+    bget(x::T, bits::UnitRange{<:Integer})::T where {T<:Integer}
 
-@inline bclear(x::T, bit::BitCount) where {T<:Integer} = x & ~bmask(typeof(x), fbc(T, bit))
-
-
-@inline bget(x::T, bits::UnitRange{U}) where {T<:Integer,U<:BitCount} = begin
+Get the value of the bit range `bits` of x.
+"""
+@inline bget(x::T, bits::UnitRange{<:BitCount}) where {T<:Integer} = begin
     fbits = fbc(T, bits)
     (x & bmask(typeof(x), fbits)) >>> fbits.start
 end
 
-@inline bset(x::T, bits::UnitRange{U}, y::Integer) where {T<:Integer,U<:BitCount} = begin
+
+function bset end
+export bset
+
+"""
+    bset(x::T, bit::Integer)::T where {T<:Integer}
+
+Returns a modified copy of x, with bit `bit` set (to one).
+"""
+@inline bset(x::T, bit::BitCount) where {T<:Integer} = x | bmask(typeof(x), fbc(T, bit))
+
+"""
+    bset(x::T, bit::Integer, y::Bool)::T where {T<:Integer}
+
+Returns a modified copy of x, with bit `bit` set to `y`.
+"""
+@inline bset(x::T, bit::BitCount, y::Bool) where {T<:Integer} = y ? bset(x, fbc(T, bit)) : bclear(x, fbc(T, bit))
+
+"""
+    bset(x::T, bits::UnitRange{<:Integer}, y::Integer)::T where {T<:Integer}
+
+Returns a modified copy of x, with bit range `bits` set to `y`.
+"""
+@inline bset(x::T, bits::UnitRange{<:BitCount}, y::Integer) where {T<:Integer} = begin
     fbits = fbc(T, bits)
     local bm = bmask(typeof(x), fbits)
     (x & ~bm) | ((convert(typeof(x), y) << fbits.start) & bm)
 end
 
 
+function bclear end
+export bclear
+
+"""
+    bclear(x::T, bit::Integer)::T where {T<:Integer}
+
+Returns a modified copy of x, with bit `bit` cleared (set to zero).
+"""
+@inline bclear(x::T, bit::BitCount) where {T<:Integer} = x & ~bmask(typeof(x), fbc(T, bit))
+
+
+
+function bflip end
+export bflip
+
+"""
+    bflip(x::T, bit::Integer)::T where {T<:Integer}
+
+Returns a modified copy of x, with bit `bit` flipped.
+"""
 @inline bflip(x::T, bit::BitCount) where {T<:Integer} = xor(x, bmask(typeof(x), fbc(T, bit)))
 
-@inline bflip(x::T, bits::UnitRange{U}) where {T<:Integer,U<:BitCount} = xor(x, bmask(typeof(x), fbc(T, bits)))
+"""
+    bflip(x::T, bits::UnitRange{<:Integer})::T where {T<:Integer}
+
+Returns a modified copy of x, with all bits in bit range `bits` flipped.
+"""
+@inline bflip(x::T, bits::UnitRange{<:BitCount}) where {T<:Integer} = xor(x, bmask(typeof(x), fbc(T, bits)))
 
 
+function lsbget end
+export lsbget
+
+"""
+    lsbget(x::Integer)::Bool
+
+Returns the value of the least significant bit of x.
+"""
 @inline lsbget(x::T) where {T<:Integer} =
     x & lsbmask(typeof(x)) != zero(typeof(x))
 
-@inline msbget(x::T) where {T<:Integer} =
-    x & msbmask(typeof(x)) != zero(typeof(x))
+"""
+    lsbget(x::T)::T where {T <: Integer}
 
-
+Returns the value of the `nbits` least significant bits of x.
+"""
 @inline lsbget(x::T, nbits::BitCount) where {T<:Integer} =
     x & lsbmask(typeof(x), fbc(T, nbits))
 
+
+function msbget end
+export msbget
+
+"""
+    msbget(x::T)::Bool where {T<:Integer}
+
+Returns the value of the most significant bit of x.
+"""
+@inline msbget(x::T) where {T<:Integer} =
+    x & msbmask(typeof(x)) != zero(typeof(x))
+
+"""
+    msbget(x::T)::T where {T<:Integer}
+
+Returns the value of the `nbits` most significant bits of x.
+"""
 @inline msbget(x::T, nbits::BitCount) where {T<:Integer} =
     x >>> (bsizeof(x) - fbc(T, nbits))
