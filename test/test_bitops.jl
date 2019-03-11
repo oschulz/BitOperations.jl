@@ -1,7 +1,7 @@
 # This file is a part of BitOperations.jl, licensed under the MIT License (MIT).
 
 using BitOperations
-using Compat.Test
+using Test
 
 @testset "bit operations" begin
     @testset "bsizeof" begin
