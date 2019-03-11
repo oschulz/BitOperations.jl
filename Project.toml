@@ -1,0 +1,10 @@
+name = "BitOperations"
+uuid = "e1e0eea2-bc69-5bf6-8574-13634873a17c"
+
+[deps]
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
