@@ -1,5 +1,7 @@
 # This file is a part of BitOperations.jl, licensed under the MIT License (MIT).
 
+# TODO: Deprecate custom byte-order array functions in favour of broadcasting.
+
 function bswap! end
 export bswap!
 
