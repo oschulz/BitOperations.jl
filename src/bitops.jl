@@ -1,11 +1,6 @@
 # This file is a part of BitOperations.jl, licensed under the MIT License (MIT).
 
 
-"""
-    BitOperations.BitCount = Union{Signed, Unsigned}
-
-A number of bits or the index of a bit.
-"""
 const BitCount = Union{Signed, Unsigned}
 
 
