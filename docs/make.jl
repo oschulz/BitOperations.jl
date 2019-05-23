@@ -12,7 +12,7 @@ makedocs(
     modules = [BitOperations],
     format = Documenter.HTML(
         prettyurls = !("local" in ARGS),
-        canonical = "https://oschulz.github.io/ShapesOfVariables.jl/stable/"
+        canonical = "https://oschulz.github.io/BitOperations.jl/stable/"
     ),
     pages=[
         "Home" => "index.md",
@@ -20,6 +20,8 @@ makedocs(
         "LICENSE" => "LICENSE.md",
     ],
     doctest = ("fixdoctests" in ARGS) ? :fix : true,
+    linkcheck = ("linkcheck" in ARGS),
+    strict = !("local" in ARGS),
 )
 
 deploydocs(
