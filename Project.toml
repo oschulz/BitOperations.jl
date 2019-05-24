@@ -1,6 +1,6 @@
 name = "BitOperations"
 uuid = "e1e0eea2-bc69-5bf6-8574-13634873a17c"
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 
