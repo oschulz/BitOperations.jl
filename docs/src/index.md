@@ -11,7 +11,8 @@ readability and reduces the potential for errors.
 BitOperations.jl conventions:
 
 * Bit indices start at zero: `bmask(Int, 0) == 0x01`, `bmask(Int, 1) == 0x02`.
-
+* Bit ranges also start at zero, counting up from the least significant bit: `bset(0x00, 0:7, 1) == 0xff`.
+* Bit ranges must be of type `UnitRange` (start:stop) and not `StepRange` (start:step:stop). As a result, reverse indices are not supported.
 
 ## Provided functions
 
