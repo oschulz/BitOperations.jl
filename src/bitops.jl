@@ -86,7 +86,7 @@ export bget
 
 Get the value of bit `bit` of x.
 """
-@inline bget(x::T, bit::BitCount) where {T<:Integer} = x & bmask(typeof(x), fbc(T, bit)) != zero(typeof(x))
+@inline bget(x::T, bit::BitCount) where {T<:Integer} = x & bmask(T, fbc(T, bit)) != zero(T)
 
 """
     bget(x::T, bits::UnitRange{<:Integer})::T where {T<:Integer}
@@ -95,7 +95,7 @@ Get the value of the bit range `bits` of x.
 """
 @inline bget(x::T, bits::UnitRange{<:BitCount}) where {T<:Integer} = begin
     fbits = fbc(T, bits)
-    (x & bmask(typeof(x), fbits)) >>> fbits.start
+    (x & bmask(T, fbits)) >>> fbits.start
 end
 
 
@@ -107,7 +107,7 @@ export bset
 
 Returns a modified copy of x, with bit `bit` set (to one).
 """
-@inline bset(x::T, bit::BitCount) where {T<:Integer} = x | bmask(typeof(x), fbc(T, bit))
+@inline bset(x::T, bit::BitCount) where {T<:Integer} = x | bmask(T, fbc(T, bit))
 
 """
     bset(x::T, bit::Integer, y::Bool)::T where {T<:Integer}
@@ -123,8 +123,8 @@ Returns a modified copy of x, with bit range `bits` set to `y`.
 """
 @inline bset(x::T, bits::UnitRange{<:BitCount}, y::Integer) where {T<:Integer} = begin
     fbits = fbc(T, bits)
-    local bm = bmask(typeof(x), fbits)
-    (x & ~bm) | ((convert(typeof(x), y) << fbits.start) & bm)
+    local bm = bmask(T, fbits)
+    (x & ~bm) | ((convert(T, y) << fbits.start) & bm)
 end
 
 
@@ -136,7 +136,7 @@ export bclear
 
 Returns a modified copy of x, with bit `bit` cleared (set to zero).
 """
-@inline bclear(x::T, bit::BitCount) where {T<:Integer} = x & ~bmask(typeof(x), fbc(T, bit))
+@inline bclear(x::T, bit::BitCount) where {T<:Integer} = x & ~bmask(T, fbc(T, bit))
 
 
 
@@ -148,14 +148,14 @@ export bflip
 
 Returns a modified copy of x, with bit `bit` flipped.
 """
-@inline bflip(x::T, bit::BitCount) where {T<:Integer} = xor(x, bmask(typeof(x), fbc(T, bit)))
+@inline bflip(x::T, bit::BitCount) where {T<:Integer} = xor(x, bmask(T, fbc(T, bit)))
 
 """
     bflip(x::T, bits::UnitRange{<:Integer})::T where {T<:Integer}
 
 Returns a modified copy of x, with all bits in bit range `bits` flipped.
 """
-@inline bflip(x::T, bits::UnitRange{<:BitCount}) where {T<:Integer} = xor(x, bmask(typeof(x), fbc(T, bits)))
+@inline bflip(x::T, bits::UnitRange{<:BitCount}) where {T<:Integer} = xor(x, bmask(T, fbc(T, bits)))
 
 
 function lsbget end
@@ -167,7 +167,7 @@ export lsbget
 Returns the value of the least significant bit of x.
 """
 @inline lsbget(x::T) where {T<:Integer} =
-    x & lsbmask(typeof(x)) != zero(typeof(x))
+    x & lsbmask(T) != zero(T)
 
 """
     lsbget(x::T)::T where {T <: Integer}
@@ -175,7 +175,7 @@ Returns the value of the least significant bit of x.
 Returns the value of the `nbits` least significant bits of x.
 """
 @inline lsbget(x::T, nbits::BitCount) where {T<:Integer} =
-    x & lsbmask(typeof(x), fbc(T, nbits))
+    x & lsbmask(T, fbc(T, nbits))
 
 
 function msbget end
@@ -187,7 +187,7 @@ export msbget
 Returns the value of the most significant bit of x.
 """
 @inline msbget(x::T) where {T<:Integer} =
-    x & msbmask(typeof(x)) != zero(typeof(x))
+    x & msbmask(T) != zero(T)
 
 """
     msbget(x::T)::T where {T<:Integer}
